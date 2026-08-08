@@ -3,3 +3,4 @@ alevin-output/
 conda/
 data/
 .snakemake/
+notes.txt

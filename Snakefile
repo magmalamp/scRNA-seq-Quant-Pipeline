@@ -106,3 +106,31 @@ rule seq_to_ref_map:
         --sketch -1 {input.fq_r1} -2 {input.fq_r2} -o {output} \
         --tgMap {input.tg_map} --dumpFeatures --{params.chem}
     """
+
+rule gen_permit_list:
+  input:
+    "alevin-output/{sample}/{sample}_map"
+  output:
+    directory("alevin-output/{sample}/{sample}_quant")
+  params:
+    ori="both"    # "fw", "rc", or "both"
+  shell:
+    r"""
+      alevin-fry generate-permit-list --input {input} --output-dir {output} \
+        --expected-ori {params.ori} --knee-distance
+    """
+
+rule collate_and_quant:
+  input:
+    quant="alevin-output/{sample}/{sample}_quant",
+    map="alevin-output/{sample}/{sample}_map",
+    t2g_3col="data/splici/transcriptome_splici_fl85_t2g_3col.tsv"
+  output:
+    directory("alevin-output/{sample}/{sample}_count")
+  threads: 4
+  shell:
+    r"""
+      alevin-fry collate -t {threads} -i {input.quant} -r {input.map} --compress
+      alevin-fry quant -t {threads} -i {input.quant} -o {output} --tg-map {input.t2g_3col} \
+        --resolution cr-like --use-mtx
+    """
