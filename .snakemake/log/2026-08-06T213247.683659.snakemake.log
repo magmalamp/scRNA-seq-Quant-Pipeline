@@ -1,4 +1,0 @@
-The flag 'directory' used in rule all is only valid for outputs, not inputs.
-The flag 'directory' used in rule seq_to_ref_map is only valid for outputs, not inputs.
-Assuming unrestricted shared filesystem usage.
-Error: cores have to be specified for local execution (use --cores N with N being a number >= 1 or 'all')

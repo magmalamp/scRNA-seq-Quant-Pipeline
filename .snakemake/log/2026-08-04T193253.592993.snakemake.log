@@ -1,4 +1,0 @@
-SyntaxError in file "/home/lamp/Projects/alevin-fry-practice/Snakefile", line 5:
-invalid syntax. Perhaps you forgot a comma?:
-  params:
-
