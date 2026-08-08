@@ -1,0 +1,9 @@
+Building DAG of jobs...
+Deleting data/splici/idx
+Deleting data/splici/transcriptome_splici_fl85.fa
+Deleting data/splici/transcriptome_splici_fl85_t2g_3col.tsv
+Deleting data/ref/genome.fa
+Deleting data/ref/genes.gtf
+Deleting data/reads/pbmc_1k_v3_R1.fastq.gz
+Deleting data/reads/pbmc_1k_v3_R2.fastq.gz
+Deleting data/splici/transcriptome_splici_fl85_t2g_2col.tsv

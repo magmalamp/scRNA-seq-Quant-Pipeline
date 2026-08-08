@@ -1,0 +1,25 @@
+The flag 'directory' used in rule seq_to_ref_map is only valid for outputs, not inputs.
+Assuming unrestricted shared filesystem usage.
+
+SNAKEMAKE
+=========
+  Date: 2026-08-06 21:37:11
+  Workflow ID: 1cb1fe97-f1a0-488a-b2d1-b6e72fa34974
+  Platform: Linux-7.1.5-arch1-2-x86_64-with-glibc2.44
+  Host: archlinux
+  User: lamp
+  Snakemake version: 9.24.0
+  Python version: 3.14.6 | packaged by conda-forge | (main, Jul 24 2026, 16:09:24) [GCC 14.3.0]
+  Command: /home/lamp/Projects/alevin-fry-practice/conda/bin/snakemake --cores all alevin-output/pbmc_1k_v3/pbmc_1k_v3_map
+  Snakefile: /home/lamp/Projects/alevin-fry-practice/Snakefile
+  Base directory: /home/lamp/Projects/alevin-fry-practice
+  Run directory: /home/lamp/Projects/alevin-fry-practice
+  Working directory: /home/lamp/Projects/alevin-fry-practice
+  Config file(s): ['config.yaml']
+  Config MD5: 9b866a43e45f67e885c2b67392f07bd8
+
+Building DAG of jobs...
+ChildIOException:
+File/directory is a child to another output:
+(PosixPath('/home/lamp/Projects/alevin-fry-practice/data/splici'), make_splici)
+(PosixPath('/home/lamp/Projects/alevin-fry-practice/data/splici/idx'), generate_index)
