@@ -134,3 +134,14 @@ rule collate_and_quant:
       alevin-fry quant -t {threads} -i {input.quant} -o {output} --tg-map {input.t2g_3col} \
         --resolution cr-like --use-mtx
     """
+
+rule load_fry:
+  input:
+    counts="alevin-output/{sample}/{sample}_count"
+  output:
+    h5ad="anndata/{sample}.h5ad"
+  params:
+    format="scRNA",     # "scRNA", "S+A", "raw", "U+S+A", "snRNA", "velocity" or "all"
+    sample="sample"
+  script:
+    "scripts/load_fry.py"
