@@ -4,3 +4,4 @@ conda/
 data/
 .snakemake/
 notes.txt
+scripts/__pycache__

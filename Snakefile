@@ -10,38 +10,28 @@ rule get_ref:
     url="https://cf.10xgenomics.com/supp/cell-exp/refdata-gex-GRCh38-2020-A.tar.gz"
   shell:
     r"""
-    curl -L -o {output.data} {params.url}
-    tar -xzf {output.data} -O refdata-gex-GRCh38-2020-A/fasta/genome.fa > {output.genome}
-    tar -xzf {output.data} -O refdata-gex-GRCh38-2020-A/genes/genes.gtf > {output.gtf}
+      curl -L -o {output.data} {params.url}
+      tar -xzf {output.data} -O refdata-gex-GRCh38-2020-A/fasta/genome.fa > {output.genome}
+      tar -xzf {output.data} -O refdata-gex-GRCh38-2020-A/genes/genes.gtf > {output.gtf}
     """
-
-def get_r1_urls(wildcards):
-  return config["samples"][wildcards.sample]["r1"]
-
-def get_r2_urls(wildcards):
-  return config["samples"][wildcards.sample]["r2"]
 
 rule fetch_and_combine:
   output:
     r1="data/reads/{sample}_R1.fastq.gz",
     r2="data/reads/{sample}_R2.fastq.gz"
   params:
-    r1_urls=get_r1_urls,
-    r2_urls=get_r2_urls
+    tar_url=lambda wc: config["samples"][wc.sample]["tar"],
+    tmp_sample="data/reads/tmp_{sample}"
   shell:
     r"""
-    i=0
-    for url in {params.r1_urls}; do
-      curl -L -o {output.r1}.lane$i "$url"; i=$((i+1))
-    done
-    cat {output.r1}.lane* > {output.r1} && rm {output.r1}.lane*
-
-    i=0
-    for url in {params.r2_urls}; do
-      curl -L -o {output.r2}.lane$i "$url"; i=$((i+1))
-    done
-    cat {output.r2}.lane* > {output.r2} && rm {output.r2}.lane*
-    """
+      mkdir -p {params.tmp_sample}
+      curl -L -o {params.tmp_sample}/fastqs.tar {params.tar_url}
+      tar -xf {params.tmp_sample}/fastqs.tar -C {params.tmp_sample}
+      cat $(find {params.tmp_sample} -name '*_R1_*.fastq.gz' | sort) > {output.r1}
+      cat $(find {params.tmp_sample} -name '*_R2_*.fastq.gz' | sort) > {output.r2}
+      rm -rf {params.tmp_sample}
+      """
+    
 
 rule make_splici:
   input:
@@ -56,9 +46,9 @@ rule make_splici:
     outdir="data/splici"
   shell:
     r"""
-    pyroe make-splici {input.genome} {input.gtf} {params.read_length} {params.outdir} \
-      --flank-trim-length {params.flank_trim} \
-      --filename-prefix transcriptome_splici --dedup-seqs
+      pyroe make-splici {input.genome} {input.gtf} {params.read_length} {params.outdir} \
+        --flank-trim-length {params.flank_trim} \
+        --filename-prefix transcriptome_splici --dedup-seqs
     """
 
 # needed index file for salmon alevin
@@ -84,9 +74,6 @@ rule t2g_2col:
       cut -f1,2 {input} > {output}
     """
 
-def get_r2_urls(wildcards):
-  return config["samples"][wildcards.sample]["r2"]
-
 # finally run salmon alevin
 rule seq_to_ref_map:
   input:
@@ -98,7 +85,7 @@ rule seq_to_ref_map:
     directory("alevin-output/{sample}/{sample}_map")
   params:
     lib="A",
-    chem="chromium"   # "chromium", "chromiumV3", or "dropseq"
+    chem="chromiumV3"   # "chromium", "chromiumV3", or "dropseq"
   threads: 4
   shell:
     r"""
@@ -142,6 +129,18 @@ rule load_fry:
     h5ad="anndata/{sample}.h5ad"
   params:
     format="scRNA",     # "scRNA", "S+A", "raw", "U+S+A", "snRNA", "velocity" or "all"
-    sample="sample"
+    sample="{sample}"
   script:
     "scripts/load_fry.py"
+
+rule QC_and_plots:
+  input:
+    h5ad="anndata/{sample}.h5ad",
+    gtf="data/ref/genes.gtf"
+  output:
+    knee="plots/{sample}/knee.png",
+    scatter="plots/{sample}/counts_vs_genes.png"
+  params:
+    sample="{sample}"
+  script:
+    "scripts/plot.py"
