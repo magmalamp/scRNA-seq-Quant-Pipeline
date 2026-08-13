@@ -5,3 +5,4 @@ data/
 .snakemake/
 notes.txt
 scripts/__pycache__
+anndata
