@@ -1,6 +1,6 @@
 # scRNA-seq Quantitative Pipeline
 
-This is a Snakemake port of an HPC-based alevin-fry single-cell RNA-seq lab workflow, reimplemented to run locally and reproducibly on 10x Chromium data. The pipeline runs end-to-end, from downloading a given dataset, to mapping with salmon, and cell-barcode/UMI resolution and quantification with alevin-fry. As implemented, the workflow is demonstrated on the 10x Genomics "1k PBMCs from a Healthy Donor" dataset.
+This is a Snakemake port of an HPC-based `alevin-fry` single-cell RNA-seq lab workflow, reimplemented to run locally and reproducibly on 10x Chromium data. The pipeline runs end-to-end, from downloading a given dataset, to mapping with salmon, and cell-barcode/UMI resolution and quantification with `alevin-fry`. As implemented, the workflow is demonstrated on the 10x Genomics "1k PBMCs from a Healthy Donor" dataset.
 
 ![Pipeline Directed Acyclic Graph](plots/quant_dag_full.svg)
 
@@ -39,7 +39,7 @@ The knee plot displays the total UMI counts vs the barcode rank. It can be noted
 The scatter plot displays the number of counts vs. total genes with points colored by the percentage of mitochondrial counts present. Some outliers are present with high counts and gene numbers, indicating that these are likely doublets while the low count, high mitochondrial cells are likely stressed or dying. These should be noted and considered during the analysis phase.
 
 ## Citations and Attribution
-This pipeline is a reimplementation of a workflow I worked with in the Bacher Lab. Significant changes were made to improve reproducibility and downstream analysis.
+This pipeline is a reimplementation of a workflow I worked with in Bacher Lab. Significant changes were made to improve reproducibility and downstream analysis.
 
 He, D., Zakeri, M., Sarkar, H., Soneson, C., Srivastava, A., and Patro, R. Alevin-fry unlocks rapid, accurate and memory-frugal quantification of single-cell RNA-seq data. Nat Methods 19, 316–322 (2022). https://doi.org/10.1038/s41592-022-01408-3
 
