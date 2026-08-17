@@ -82,7 +82,7 @@ rule seq_to_ref_map:
     fq_r2="data/reads/{sample}_R2.fastq.gz",
     tg_map="data/splici/transcriptome_splici_fl85_t2g_2col.tsv"
   output:
-    directory("alevin-output/{sample}/{sample}_map")
+    directory("output/alevin/{sample}/{sample}_map")
   params:
     lib="A",
     chem="chromiumV3"   # "chromium", "chromiumV3", or "dropseq"
@@ -96,9 +96,9 @@ rule seq_to_ref_map:
 
 rule gen_permit_list:
   input:
-    "alevin-output/{sample}/{sample}_map"
+    "output/alevin/{sample}/{sample}_map"
   output:
-    directory("alevin-output/{sample}/{sample}_quant")
+    directory("output/alevin/{sample}/{sample}_quant")
   params:
     ori="both"    # "fw", "rc", or "both"
   shell:
@@ -109,11 +109,11 @@ rule gen_permit_list:
 
 rule collate_and_quant:
   input:
-    quant="alevin-output/{sample}/{sample}_quant",
-    map="alevin-output/{sample}/{sample}_map",
+    quant="output/alevin/{sample}/{sample}_quant",
+    map="output/alevin/{sample}/{sample}_map",
     t2g_3col="data/splici/transcriptome_splici_fl85_t2g_3col.tsv"
   output:
-    directory("alevin-output/{sample}/{sample}_count")
+    directory("output/alevin/{sample}/{sample}_count")
   threads: 4
   shell:
     r"""
@@ -124,9 +124,9 @@ rule collate_and_quant:
 
 rule load_fry:
   input:
-    counts="alevin-output/{sample}/{sample}_count"
+    counts="output/alevin/{sample}/{sample}_count"
   output:
-    h5ad="anndata/{sample}.h5ad"
+    h5ad="output/anndata/{sample}.h5ad"
   params:
     format="scRNA",     # "scRNA", "S+A", "raw", "U+S+A", "snRNA", "velocity" or "all"
     sample="{sample}"
@@ -135,7 +135,7 @@ rule load_fry:
 
 rule QC_and_plots:
   input:
-    h5ad="anndata/{sample}.h5ad",
+    h5ad="output/anndata/{sample}.h5ad",
     gtf="data/ref/genes.gtf"
   output:
     knee="plots/{sample}/knee.png",
